@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+:root {
+  --el-color-primary: #246BCE;
+  --el-color-primary-light-3: #538ee0;
+  --el-color-primary-light-5: #8bb4ec;
+  --el-color-primary-light-7: #c5dcf7;
+  --el-color-primary-light-8: #dbeafb;
+  --el-color-primary-light-9: #eff6ff;
+  --el-color-primary-dark-2: #1b52a3;
+
+  --el-color-success: #18A57A;
+  --el-color-success-light-3: #4dc29f;
+  --el-color-success-light-5: #82dec2;
+  --el-color-success-light-9: #ecfdf5;
+
+  --el-color-warning: #F27D26;
+  --el-color-warning-light-3: #f6a15f;
+  --el-color-warning-light-5: #fbc79e;
+  --el-color-warning-light-9: #fff7ed;
+
+  --el-color-danger: #D93025;
+  --el-color-danger-light-3: #e6665e;
+  --el-color-danger-light-5: #f29f9a;
+  --el-color-danger-light-9: #fef2f2;
+
+  --el-color-info: #64748B;
+  --el-color-info-light-9: #f8fafc;
+
+  --el-border-color: #E2E8F0;
+  --el-border-color-light: #F1F5F9;
+  --el-border-color-extra-light: #F8FAFC;
+  --el-border-radius-base: 10px;
+  --el-border-radius-small: 8px;
+  --el-border-radius-round: 20px;
+  
+  --el-bg-color: #FFFFFF;
+  --el-bg-color-page: #F1F5F9;
+  --el-text-color-primary: #1E293B;
+  --el-text-color-regular: #334155;
+  --el-text-color-secondary: #64748B;
+  --el-text-color-placeholder: #94A3B8;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F1F5F9;
+  color: #334155;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Crisp utility scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Custom Element Plus Tweaks for Clean Minimal Utility */
+.el-card {
+  border-radius: 16px !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+}
+
+.el-button--primary {
+  background-color: #246BCE !important;
+  border-color: #246BCE !important;
+  font-weight: 500 !important;
+}
+.el-button--primary:hover {
+  background-color: #1d5cb5 !important;
+  border-color: #1d5cb5 !important;
+}
+
+.el-table {
+  --el-table-header-bg-color: #F8FAFC !important;
+  --el-table-border-color: #F1F5F9 !important;
+  border-radius: 12px;
+  color: #334155 !important;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600 !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+}
+
+.el-tabs__item {
+  font-size: 13px !important;
+  color: #64748B !important;
+}
+.el-tabs__item.is-active {
+  color: #246BCE !important;
+  font-weight: 600 !important;
+}
+.el-tabs__active-bar {
+  background-color: #246BCE !important;
+}

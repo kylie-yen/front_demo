@@ -1,0 +1,6 @@
+{
+  "name": "非机动车道微病害众包感知、风险评估与主动养护平台",
+  "description": "面向路政、校园后勤与道路养护部门的非机动车道微病害众包感知、风险评估与主动养护平台，支持感知事件识别聚合、风险评估、巡检任务、维修工单、一张图总览及闭环销项。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

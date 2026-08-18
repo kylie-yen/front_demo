@@ -1,0 +1,10 @@
+services:
+  front-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: front-demo:latest
+    container_name: front-demo
+    restart: unless-stopped
+    ports:
+      - "80:80"

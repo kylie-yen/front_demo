@@ -75,12 +75,14 @@ body {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
-.el-button--primary {
+/* Solid primary buttons only — skip link/plain/text variants, which rely on
+   transparent/light backgrounds that Element Plus already themes correctly. */
+.el-button--primary:not(.is-link):not(.is-plain):not(.is-text) {
   background-color: #246BCE !important;
   border-color: #246BCE !important;
   font-weight: 500 !important;
 }
-.el-button--primary:hover {
+.el-button--primary:not(.is-link):not(.is-plain):not(.is-text):hover {
   background-color: #1d5cb5 !important;
   border-color: #1d5cb5 !important;
 }
@@ -108,4 +110,22 @@ body {
 }
 .el-tabs__active-bar {
   background-color: #246BCE !important;
+}
+
+/* Shared page rhythm: keep operational screens quiet and scan-friendly. */
+main .rounded-2xl {
+  border-radius: 12px !important;
+}
+
+main .shadow-2xs,
+main .shadow-xs {
+  box-shadow: none !important;
+}
+
+main .bg-white.border {
+  border-color: #E2E8F0 !important;
+}
+
+main .text-\[10px\] {
+  font-size: 11px;
 }

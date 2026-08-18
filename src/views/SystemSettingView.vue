@@ -208,20 +208,20 @@ const store = useAppStore();
 const activeTab = ref('risk_weights');
 
 const weights = reactive({
-  harm: store.systemConfig.risk_weights.harm,
-  exposure: store.systemConfig.risk_weights.exposure,
-  vulnerability: store.systemConfig.risk_weights.vulnerability,
-  trend: store.systemConfig.risk_weights.trend,
-  consequence: store.systemConfig.risk_weights.consequence,
+  harm: store.config.risk_weights.harm,
+  exposure: store.config.risk_weights.exposure,
+  vulnerability: store.config.risk_weights.vulnerability,
+  trend: store.config.risk_weights.trend,
+  consequence: store.config.risk_weights.consequence,
 });
 
 const params = reactive({
-  highRiskThreshold: store.systemConfig.high_risk_threshold,
-  lowRiskThreshold: store.systemConfig.low_risk_threshold,
-  confidenceThreshold: store.systemConfig.confidence_threshold,
-  accPeakThreshold: store.systemConfig.acceleration_peak_threshold,
-  facilitySuppressBufferM: store.systemConfig.facility_suppression_buffer_m,
-  clusterDistanceM: store.systemConfig.cluster_distance_m,
+  highRiskThreshold: store.config.risk_thresholds.high,
+  lowRiskThreshold: store.config.risk_thresholds.medium,
+  confidenceThreshold: store.config.confidence_threshold,
+  accPeakThreshold: store.config.shock_threshold_acc,
+  facilitySuppressBufferM: store.config.facility_buffer_m,
+  clusterDistanceM: store.config.cluster_distance_m,
 });
 
 const totalWeight = computed(() => {
@@ -248,13 +248,17 @@ function saveSystemSettings() {
     ElMessage.error('风险权重之和必须等于 1.00，请微调滑块后再保存');
     return;
   }
-  store.systemConfig.risk_weights = { ...weights };
-  store.systemConfig.high_risk_threshold = params.highRiskThreshold;
-  store.systemConfig.low_risk_threshold = params.lowRiskThreshold;
-  store.systemConfig.confidence_threshold = params.confidenceThreshold;
-  store.systemConfig.acceleration_peak_threshold = params.accPeakThreshold;
-  store.systemConfig.facility_suppression_buffer_m = params.facilitySuppressBufferM;
-  store.systemConfig.cluster_distance_m = params.clusterDistanceM;
+  store.updateConfig({
+    risk_weights: { ...weights },
+    risk_thresholds: {
+      high: params.highRiskThreshold,
+      medium: params.lowRiskThreshold,
+    },
+    confidence_threshold: params.confidenceThreshold,
+    shock_threshold_acc: params.accPeakThreshold,
+    facility_buffer_m: params.facilitySuppressBufferM,
+    cluster_distance_m: params.clusterDistanceM,
+  });
 
   ElMessage.success('全局风险模型权重与算法阈值已成功保存并即时生效');
 }

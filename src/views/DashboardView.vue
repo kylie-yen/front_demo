@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-6">
     <!-- Top Row: 4-6 Key Metric Cards matching Clean Utility Theme -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- 1. Road Mileage -->
-      <div class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+      <div class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between">
         <div class="text-xs text-slate-400 mb-1">管养道路总里程</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
           <div class="text-2xl font-bold text-slate-900">{{ store.metrics.totalMileageKm }}</div>
@@ -18,7 +18,7 @@
       </div>
 
       <!-- 2. Imported Tracks -->
-      <div class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between">
+      <div class="hidden bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex-col justify-between">
         <div class="text-xs text-slate-400 mb-1">导入众包轨迹</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
           <div class="text-2xl font-bold text-slate-900">{{ store.metrics.trackCount }}</div>
@@ -35,7 +35,7 @@
       <!-- 3. Pending Confirmation Damages -->
       <div
         @click="goToDamageListWithFilter('待确认')"
-        class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between cursor-pointer hover:border-slate-300 transition"
+        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-slate-300 transition"
       >
         <div class="text-xs text-slate-400 mb-1">待核验微病害</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
@@ -53,7 +53,7 @@
       <!-- 4. High Risk Damages -->
       <div
         @click="goToDamageListWithFilter('', '高')"
-        class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between cursor-pointer hover:border-red-300 transition"
+        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-red-300 transition"
       >
         <div class="text-xs text-slate-400 mb-1">高风险在管病害</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
@@ -71,7 +71,7 @@
       <!-- 5. Active Work Orders -->
       <div
         @click="goToWorkOrders('待派工')"
-        class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between cursor-pointer hover:border-orange-300 transition"
+        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-orange-300 transition"
       >
         <div class="text-xs text-slate-400 mb-1">进行中维修工单</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
@@ -89,7 +89,7 @@
       <!-- 6. Closed Items -->
       <div
         @click="goToDamageListWithFilter('已销项')"
-        class="bg-white p-4.5 rounded-2xl border border-[#E2E8F0] shadow-xs flex flex-col justify-between cursor-pointer hover:border-emerald-300 transition"
+        class="hidden bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex-col justify-between cursor-pointer hover:border-emerald-300 transition"
       >
         <div class="text-xs text-slate-400 mb-1">已闭环销项数量</div>
         <div class="flex items-baseline space-x-1.5 mt-0.5">
@@ -106,9 +106,9 @@
     </div>
 
     <!-- Quick Action Portals (待办入口) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 rounded-xl border border-[#E2E8F0] bg-white p-3">
       <!-- 待巡检核验 -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4.5 flex items-center justify-between shadow-xs">
+      <div class="p-2.5 flex items-center justify-between border-b md:border-b-0 md:border-r border-[#E2E8F0]">
         <div class="flex items-center space-x-3">
           <div class="w-9 h-9 rounded-xl bg-[#246BCE]/10 text-[#246BCE] flex items-center justify-center font-bold">
             <el-icon :size="18"><Checked /></el-icon>
@@ -120,14 +120,14 @@
         </div>
         <button
           @click="goToInspections('待巡检')"
-          class="px-3 py-1.5 bg-[#246BCE] text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition cursor-pointer"
+          class="px-2 py-1.5 text-[#246BCE] text-xs font-semibold hover:bg-blue-50 rounded-lg transition cursor-pointer"
         >
           去核验 &rarr;
         </button>
       </div>
 
       <!-- 待派工维修 -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4.5 flex items-center justify-between shadow-xs">
+      <div class="p-2.5 flex items-center justify-between border-b md:border-b-0 md:border-r border-[#E2E8F0]">
         <div class="flex items-center space-x-3">
           <div class="w-9 h-9 rounded-xl bg-[#F27D26]/10 text-[#F27D26] flex items-center justify-center font-bold">
             <el-icon :size="18"><Tools /></el-icon>
@@ -139,14 +139,14 @@
         </div>
         <button
           @click="goToWorkOrders('待派工')"
-          class="px-3 py-1.5 bg-[#F27D26] text-white rounded-lg text-xs font-medium hover:bg-orange-600 transition cursor-pointer"
+          class="px-2 py-1.5 text-[#F27D26] text-xs font-semibold hover:bg-orange-50 rounded-lg transition cursor-pointer"
         >
           去派工 &rarr;
         </button>
       </div>
 
       <!-- 待复核销项 -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4.5 flex items-center justify-between shadow-xs">
+      <div class="p-2.5 flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div class="w-9 h-9 rounded-xl bg-[#18A57A]/10 text-[#18A57A] flex items-center justify-center font-bold">
             <el-icon :size="18"><DocumentChecked /></el-icon>
@@ -158,7 +158,7 @@
         </div>
         <button
           @click="goToWorkOrders('待复核')"
-          class="px-3 py-1.5 bg-[#18A57A] text-white rounded-lg text-xs font-medium hover:bg-emerald-600 transition cursor-pointer"
+          class="px-2 py-1.5 text-[#18A57A] text-xs font-semibold hover:bg-emerald-50 rounded-lg transition cursor-pointer"
         >
           去复核 &rarr;
         </button>
@@ -166,9 +166,9 @@
     </div>
 
     <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <!-- 1. Status & Risk Level Distribution -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-3">
         <div class="flex items-center justify-between mb-2">
           <div>
             <h3 class="text-xs font-bold text-slate-800">微病害状态全景分布</h3>
@@ -181,7 +181,7 @@
       </div>
 
       <!-- 2. Damage Types Distribution -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-3">
         <div class="flex items-center justify-between mb-2">
           <div>
             <h3 class="text-xs font-bold text-slate-800">微病害类型构成</h3>
@@ -194,7 +194,7 @@
       </div>
 
       <!-- 3. Trend Chart (近30天) -->
-      <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-6 order-first">
         <div class="flex items-center justify-between mb-2">
           <div>
             <h3 class="text-xs font-bold text-slate-800">近30天 感知发现 vs 维修销项</h3>
@@ -208,7 +208,7 @@
     </div>
 
     <!-- Bottom Section: High Risk TOP 10 Table -->
-    <div class="bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-xs">
+    <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center space-x-2">
           <div class="w-2 h-2 rounded-full bg-[#D93025]"></div>

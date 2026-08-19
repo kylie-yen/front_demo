@@ -183,6 +183,8 @@ export interface RepairRecord {
   after_photos: string[];
   completed_at: string;
   duration_hours: number;
+  materials_used?: string;
+  notes?: string;
   retest_vibration_rms?: number;
   retest_status: '已降至安全阈值' | '效果达标' | '暂未复测';
   review_result?: '通过' | '驳回';
@@ -219,6 +221,7 @@ export interface UserItem {
   name: string;
   account: string;
   role: '管理人员' | '巡检班组' | '维修班组';
+  department?: string;
   phone: string;
   status: '启用' | '禁用';
   avatar: string;

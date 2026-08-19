@@ -41,7 +41,7 @@ export const useAppStore = defineStore('app', () => {
   const isAuthenticated = ref<boolean>(true);
 
   // Global pilot filter & date range
-  const currentPilotArea = ref<string>('闵行区·永德路地铁站周边试点区 (1.8km²)');
+  const currentPilotArea = ref<string>('闵行区·永德路地铁站周边试点区');
   const dateRange = ref<[string, string]>([
     dayjs().subtract(30, 'day').format('YYYY-MM-DD'),
     dayjs().format('YYYY-MM-DD'),
@@ -383,6 +383,8 @@ export const useAppStore = defineStore('app', () => {
       before_photos: string[];
       after_photos: string[];
       duration_hours: number;
+      materials_used?: string;
+      notes?: string;
       retest_vibration_rms?: number;
       retest_status?: '已降至安全阈值' | '效果达标' | '暂未复测';
     }
@@ -397,6 +399,8 @@ export const useAppStore = defineStore('app', () => {
       after_photos: data.after_photos.length ? data.after_photos : ['https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=600&auto=format&fit=crop&q=80'],
       completed_at: dayjs().format('YYYY-MM-DD HH:mm'),
       duration_hours: data.duration_hours || 2.0,
+      materials_used: data.materials_used,
+      notes: data.notes,
       retest_vibration_rms: data.retest_vibration_rms ?? 0.42,
       retest_status: data.retest_status || '已降至安全阈值',
     };

@@ -47,10 +47,10 @@
       </div>
 
       <div
-        @click="statusFilter = '维修中'"
+        @click="statusFilter = '处理中'"
         :class="[
           'p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between shadow-2xs',
-          statusFilter === '维修中' ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-200/80 text-slate-700',
+          statusFilter === '处理中' ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-200/80 text-slate-700',
         ]"
       >
         <span class="text-xs font-semibold">施工处理中</span>
@@ -130,7 +130,7 @@
 
             <!-- Action 2: Submit Completion -->
             <el-button
-              v-if="row.status === '维修中'"
+              v-if="row.status === '处理中'"
               type="primary"
               size="small"
               @click="openCompleteModal(row)"
@@ -148,7 +148,7 @@
               复核销项
             </el-button>
 
-            <span v-if="row.status === '已结案'" class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+            <span v-if="row.status === '已完成'" class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
               <el-icon><Check /></el-icon> 已结案
             </span>
           </template>
@@ -269,7 +269,7 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
           <div class="font-bold text-slate-800 mb-1">施工申报复核指标：</div>
           <div>• 复测振动 RMS：<strong class="text-emerald-600">{{ currentOrder?.repair_record?.retest_vibration_rms || 1.8 }} m/s² (达标)</strong></div>
-          <div>• 耗用材料：{{ currentOrder?.repair_record?.materials_used || '冷补沥青料 25kg' }}</div>
+          <div>• 耗用材料：{{ currentOrder?.repair_record?.materials_used || '沥青' }}</div>
         </div>
 
         <el-form label-position="top">
@@ -304,7 +304,7 @@ const store = useAppStore();
 const statusFilter = ref('全部');
 
 const pendingDispatchCount = computed(() => store.workOrders.filter((w) => w.status === '待派工').length);
-const inRepairCount = computed(() => store.workOrders.filter((w) => w.status === '维修中').length);
+const inRepairCount = computed(() => store.workOrders.filter((w) => w.status === '处理中').length);
 const pendingReviewCount = computed(() => store.workOrders.filter((w) => w.status === '待复核').length);
 
 const filteredOrders = computed(() => {
@@ -352,8 +352,8 @@ function handleConfirmCreate() {
 }
 
 function handleDispatch(order: WorkOrderItem) {
-  store.dispatchWorkOrder(order.id, '市政特快修二组 (王宏伟)');
-  ElMessage.success(`工单 ${order.id} 已派发至施工班组，进入【维修中】`);
+  store.updateWorkOrderStatus(order.id, '处理中');
+  ElMessage.success(`工单 ${order.id} 已派发至施工班组，进入【处理中】`);
 }
 
 // Complete Dialog
@@ -374,10 +374,12 @@ function openCompleteModal(order: WorkOrderItem) {
 function handleConfirmComplete() {
   if (!currentOrder.value) return;
   store.submitWorkOrderCompletion(currentOrder.value.id, {
-    photo_before: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&auto=format&fit=crop&q=80',
-    photo_after: completeForm.photo_after,
+    method: '清槽除尘，高粘沥青冷补料分层填补并夯实平整',
+    before_photos: ['https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&auto=format&fit=crop&q=80'],
+    after_photos: [completeForm.photo_after],
+    duration_hours: 2.0,
     retest_vibration_rms: completeForm.vibration_rms,
-    retest_status: '合格',
+    retest_status: '效果达标',
     materials_used: completeForm.materials,
     notes: completeForm.remarks,
   });
@@ -396,7 +398,7 @@ function openReviewModal(order: WorkOrderItem) {
 
 function handleConfirmReview() {
   if (!currentOrder.value) return;
-  store.approveWorkOrder(currentOrder.value.id, '复核振动RMS 1.85m/s²达标，路面平整，予以闭环销项');
+  store.reviewWorkOrder(currentOrder.value.id, true, '复核振动RMS 1.85m/s²达标，路面平整，予以闭环销项');
   ElMessage.success(`工单 ${currentOrder.value.id} 复核通过并完成闭环销项！`);
   showReviewDialog.value = false;
 }

@@ -105,66 +105,6 @@
       </div>
     </div>
 
-    <!-- Quick Action Portals (待办入口) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 rounded-xl border border-[#E2E8F0] bg-white p-3">
-      <!-- 待巡检核验 -->
-      <div class="p-2.5 flex items-center justify-between border-b md:border-b-0 md:border-r border-[#E2E8F0]">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-xl bg-[#246BCE]/10 text-[#246BCE] flex items-center justify-center font-bold">
-            <el-icon :size="18"><Checked /></el-icon>
-          </div>
-          <div>
-            <div class="text-xs font-bold text-slate-800">待现场量测核验</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">当前 <span class="font-bold text-[#246BCE]">{{ store.metrics.pendingInspections }}</span> 项巡检待核实</div>
-          </div>
-        </div>
-        <button
-          @click="goToInspections('待巡检')"
-          class="px-2 py-1.5 text-[#246BCE] text-xs font-semibold hover:bg-blue-50 rounded-lg transition cursor-pointer"
-        >
-          去核验 &rarr;
-        </button>
-      </div>
-
-      <!-- 待派工维修 -->
-      <div class="p-2.5 flex items-center justify-between border-b md:border-b-0 md:border-r border-[#E2E8F0]">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-xl bg-[#F27D26]/10 text-[#F27D26] flex items-center justify-center font-bold">
-            <el-icon :size="18"><Tools /></el-icon>
-          </div>
-          <div>
-            <div class="text-xs font-bold text-slate-800">待派工维修工单</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">当前 <span class="font-bold text-[#F27D26]">{{ store.metrics.pendingRepairWorkOrders }}</span> 张工单待安排施工</div>
-          </div>
-        </div>
-        <button
-          @click="goToWorkOrders('待派工')"
-          class="px-2 py-1.5 text-[#F27D26] text-xs font-semibold hover:bg-orange-50 rounded-lg transition cursor-pointer"
-        >
-          去派工 &rarr;
-        </button>
-      </div>
-
-      <!-- 待复核销项 -->
-      <div class="p-2.5 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-xl bg-[#18A57A]/10 text-[#18A57A] flex items-center justify-center font-bold">
-            <el-icon :size="18"><DocumentChecked /></el-icon>
-          </div>
-          <div>
-            <div class="text-xs font-bold text-slate-800">待复核验收销项</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">共有 <span class="font-bold text-[#18A57A]">{{ store.metrics.pendingReviews }}</span> 张完工记录待复核</div>
-          </div>
-        </div>
-        <button
-          @click="goToWorkOrders('待复核')"
-          class="px-2 py-1.5 text-[#18A57A] text-xs font-semibold hover:bg-emerald-50 rounded-lg transition cursor-pointer"
-        >
-          去复核 &rarr;
-        </button>
-      </div>
-    </div>
-
     <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <!-- 1. Status & Risk Level Distribution -->
@@ -320,11 +260,6 @@ import type { DamageItem } from '../types';
 import StatusTag from '../components/StatusTag.vue';
 import EChartsWrapper from '../components/EChartsWrapper.vue';
 import DamageDrawer from '../components/DamageDrawer.vue';
-import {
-  Checked,
-  Tools,
-  DocumentChecked,
-} from '@element-plus/icons-vue';
 import type { EChartsOption } from 'echarts';
 
 const router = useRouter();
@@ -352,13 +287,6 @@ function goToDamageListWithFilter(status?: string, risk?: string) {
   router.push({
     path: '/damages',
     query: { status, risk },
-  });
-}
-
-function goToInspections(status?: string) {
-  router.push({
-    path: '/inspections',
-    query: { status },
   });
 }
 

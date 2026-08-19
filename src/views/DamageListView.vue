@@ -5,7 +5,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
-          <h2 class="text-base font-bold text-slate-800">非机动车道微病害资产台账</h2>
+          <h2 class="text-base font-bold text-slate-800">非机动车道微病害台账</h2>
           <span class="text-xs text-slate-400">共检索到 {{ filteredDamages.length }} 条记录</span>
         </div>
 

@@ -1,408 +1,101 @@
 <template>
-  <div class="flex flex-col gap-6">
-    <!-- Top Row: 4-6 Key Metric Cards matching Clean Utility Theme -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- 1. Road Mileage -->
-      <div class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between">
-        <div class="text-xs text-slate-400 mb-1">管养道路总里程</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-slate-900">{{ store.metrics.totalMileageKm }}</div>
-          <div class="text-xs font-medium text-slate-400">km</div>
-        </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-[#18A57A] font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"></path>
-          </svg>
-          <span>覆盖 8 条试点车道</span>
-        </div>
-      </div>
+  <div class="dashboard-page">
+    <section class="page-hero">
+      <div><span class="eyebrow">ROAD MAINTENANCE OVERVIEW</span><h1>早上好，{{ store.currentUser?.name }}</h1><p>永德路试点区运行平稳，当前有 <strong>{{ store.metrics.highRiskDamages }}</strong> 处高风险病害需要优先关注。</p></div>
+      <div class="hero-actions"><button class="secondary-action" @click="router.push('/reports')">查看分析报告</button><button class="primary-action" @click="router.push('/damages')"><span>＋</span> 新建处置任务</button></div>
+    </section>
 
-      <!-- 2. Imported Tracks -->
-      <div class="hidden bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex-col justify-between">
-        <div class="text-xs text-slate-400 mb-1">导入众包轨迹</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-slate-900">{{ store.metrics.trackCount }}</div>
-          <div class="text-xs font-medium text-slate-400">条</div>
-        </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-[#246BCE] font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>均值置信度 89.2%</span>
-        </div>
-      </div>
+    <section class="metric-grid" aria-label="核心指标">
+      <article v-for="metric in metrics" :key="metric.label" class="metric-card" :class="metric.tone" @click="metric.path && router.push(metric.path)">
+        <div class="metric-icon"><el-icon :size="20"><component :is="metric.icon" /></el-icon></div>
+        <div class="metric-content"><span>{{ metric.label }}</span><div><strong>{{ metric.value }}</strong><small>{{ metric.unit }}</small></div><p><b>{{ metric.change }}</b>{{ metric.note }}</p></div>
+      </article>
+    </section>
 
-      <!-- 3. Pending Confirmation Damages -->
-      <div
-        @click="goToDamageListWithFilter('待确认')"
-        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-slate-300 transition"
-      >
-        <div class="text-xs text-slate-400 mb-1">待核验微病害</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-slate-800">{{ store.metrics.pendingConfirmCount }}</div>
-          <div class="text-xs font-medium text-slate-400">处</div>
+    <section class="dashboard-grid">
+      <article class="workroom-card trend-card">
+        <header class="card-header"><div><span class="eyebrow">30 DAYS TREND</span><h2>感知发现与维修闭环</h2></div><div class="chart-legend"><span class="discover">感知发现</span><span class="closed">维修销项</span></div></header>
+        <div class="trend-chart"><EChartsWrapper :options="trendOptions" /></div>
+      </article>
+
+      <article class="workroom-card workflow-card">
+        <header class="card-header"><div><span class="eyebrow">LIVE WORKFLOW</span><h2>今日处置进度</h2></div><button class="text-action" @click="router.push('/work-orders')">查看全部 →</button></header>
+        <div class="workflow-list">
+          <button v-for="item in workflow" :key="item.label" @click="router.push(item.path)">
+            <span class="workflow-dot" :class="item.tone"></span><span><strong>{{ item.label }}</strong><small>{{ item.caption }}</small></span><b>{{ item.value }}</b><i>→</i>
+          </button>
         </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-slate-500 font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-          </svg>
-          <span>建议人工现场量测</span>
+        <div class="closure-summary"><div><span>本月主动闭环率</span><strong>94.8%</strong></div><div class="progress-track"><span style="width:94.8%"></span></div><p>较上月提升 6.2%，处置平均耗时缩短 4.6 小时</p></div>
+      </article>
+
+      <article class="workroom-card risk-card">
+        <header class="card-header"><div><span class="eyebrow">RISK PRIORITY</span><h2>高风险待处置清单</h2></div><button class="text-action" @click="router.push('/damages')">全部病害 →</button></header>
+        <div class="risk-list">
+          <button v-for="(damage, index) in store.metrics.topHighRisk.slice(0, 5)" :key="damage.id" @click="openDamage(damage)">
+            <span class="risk-rank">{{ String(index + 1).padStart(2, '0') }}</span>
+            <span class="risk-main"><strong>{{ damage.road_name }} · {{ damage.type }}</strong><small>{{ damage.id }} · {{ damage.mileage_m }}m 处</small></span>
+            <span class="risk-score"><b>{{ damage.risk_score }}</b><small>风险分</small></span>
+            <span class="risk-bar"><i :style="{ width: `${damage.risk_score}%` }"></i></span>
+            <StatusTag :value="damage.status" />
+          </button>
         </div>
-      </div>
+      </article>
 
-      <!-- 4. High Risk Damages -->
-      <div
-        @click="goToDamageListWithFilter('', '高')"
-        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-red-300 transition"
-      >
-        <div class="text-xs text-slate-400 mb-1">高风险在管病害</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-[#D93025]">{{ store.metrics.highRiskDamages }}</div>
-          <div class="text-xs font-medium text-slate-400">处</div>
+      <aside class="workroom-card activity-card">
+        <header class="card-header"><div><span class="eyebrow">ACTIVITY STREAM</span><h2>协作动态</h2></div></header>
+        <div class="activity-list">
+          <article v-for="(notice, index) in store.notifications.slice(0, 4)" :key="notice.id">
+            <span class="activity-avatar" :class="`avatar-${index + 1}`">{{ ['巡','系','修','管'][index] }}</span>
+            <div><strong>{{ notice.title }}</strong><p>{{ notice.message }}</p><time>{{ notice.time }}</time></div>
+          </article>
         </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-[#D93025] font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v4a1 1 0 102 0V7zm-1 8a1 1 0 100-2 1 1 0 000 2z"></path>
-          </svg>
-          <span>≥70分 需优先派工</span>
-        </div>
-      </div>
+        <button class="activity-more" @click="router.push('/inspections')">进入协作中心</button>
+      </aside>
+    </section>
 
-      <!-- 5. Active Work Orders -->
-      <div
-        @click="goToWorkOrders('待派工')"
-        class="bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex flex-col justify-between cursor-pointer hover:border-orange-300 transition"
-      >
-        <div class="text-xs text-slate-400 mb-1">进行中维修工单</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-[#F27D26]">{{ store.metrics.pendingRepairWorkOrders }}</div>
-          <div class="text-xs font-medium text-slate-400">张</div>
-        </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-[#F27D26] font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-          </svg>
-          <span>待派工与施工中</span>
-        </div>
-      </div>
-
-      <!-- 6. Closed Items -->
-      <div
-        @click="goToDamageListWithFilter('已销项')"
-        class="hidden bg-white p-4.5 rounded-xl border border-[#E2E8F0] shadow-none flex-col justify-between cursor-pointer hover:border-emerald-300 transition"
-      >
-        <div class="text-xs text-slate-400 mb-1">已闭环销项数量</div>
-        <div class="flex items-baseline space-x-1.5 mt-0.5">
-          <div class="text-2xl font-bold text-[#18A57A]">{{ store.metrics.closedDamages }}</div>
-          <div class="text-xs font-medium text-slate-400">件</div>
-        </div>
-        <div class="mt-2.5 flex items-center space-x-1 text-[10px] text-[#18A57A] font-medium">
-          <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
-          </svg>
-          <span>主动闭环率 94.8%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <!-- 1. Status & Risk Level Distribution -->
-      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-3">
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <h3 class="text-xs font-bold text-slate-800">微病害状态全景分布</h3>
-            <span class="text-[10px] text-slate-400">总计 {{ store.damages.length }} 处在管点位</span>
-          </div>
-        </div>
-        <div class="h-60">
-          <EChartsWrapper :options="statusPieOptions" />
-        </div>
-      </div>
-
-      <!-- 2. Damage Types Distribution -->
-      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-3">
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <h3 class="text-xs font-bold text-slate-800">微病害类型构成</h3>
-            <span class="text-[10px] text-slate-400">坑洼与沉陷为主要类型</span>
-          </div>
-        </div>
-        <div class="h-60">
-          <EChartsWrapper :options="typeBarOptions" />
-        </div>
-      </div>
-
-      <!-- 3. Trend Chart (近30天) -->
-      <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none flex flex-col justify-between lg:col-span-6 order-first">
-        <div class="flex items-center justify-between mb-2">
-          <div>
-            <h3 class="text-xs font-bold text-slate-800">近30天 感知发现 vs 维修销项</h3>
-            <span class="text-[10px] text-slate-400">闭环收敛态势良好</span>
-          </div>
-        </div>
-        <div class="h-60">
-          <EChartsWrapper :options="trendLineOptions" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Section: High Risk TOP 10 Table -->
-    <div class="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-none">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center space-x-2">
-          <div class="w-2 h-2 rounded-full bg-[#D93025]"></div>
-          <h3 class="text-xs font-bold text-slate-800">高风险待处置微病害 TOP 10 清单</h3>
-          <span class="text-[10px] text-slate-400 font-mono">按可解释风险综合评分排序</span>
-        </div>
-        <button
-          @click="router.push('/damages')"
-          class="text-xs font-medium text-[#246BCE] hover:underline cursor-pointer flex items-center space-x-1"
-        >
-          <span>查看全部病害列表</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
-
-      <el-table :data="store.metrics.topHighRisk" stripe style="width: 100%" size="default">
-        <el-table-column prop="id" label="病害编号" width="140">
-          <template #default="{ row }">
-            <span class="font-mono font-semibold text-[#246BCE] hover:underline cursor-pointer" @click="openDrawer(row)">
-              {{ row.id }}
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="type" label="病害类型" width="120">
-          <template #default="{ row }">
-            <span class="font-medium text-slate-800">{{ row.type }} ({{ row.severity }})</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="road_name" label="所在位置" min-width="180">
-          <template #default="{ row }">
-            <div class="text-xs text-slate-700">
-              <span class="font-medium">{{ row.road_name }}</span>
-              <span class="text-slate-400 ml-1">({{ row.mileage_m }}m处)</span>
-            </div>
-            <div v-if="row.near_scenario_name" class="text-[10px] text-amber-600 truncate mt-0.5">
-              ⚠️ {{ row.near_scenario_name }}
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="risk_score" label="风险评分" width="130" sortable>
-          <template #default="{ row }">
-            <div class="flex items-center space-x-2">
-              <span class="text-sm font-bold text-[#D93025]">{{ row.risk_score }} 分</span>
-              <StatusTag :value="row.risk_level + '风险'" />
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="confidence" label="置信度" width="110">
-          <template #default="{ row }">
-            <div class="flex items-center space-x-1.5">
-              <span class="text-xs font-semibold text-slate-700">{{ row.confidence }}%</span>
-              <el-tag v-if="row.confidence < 60" type="warning" size="small">待核验</el-tag>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="status" label="当前状态" width="110">
-          <template #default="{ row }">
-            <StatusTag :value="row.status" />
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="created_at" label="发现时间" width="140" />
-
-        <el-table-column label="快捷操作" width="160" fixed="right">
-          <template #default="{ row }">
-            <div class="flex items-center space-x-1.5">
-              <el-button link type="primary" size="small" @click="openDrawer(row)">
-                详情
-              </el-button>
-              <el-button
-                v-if="row.status === '待确认'"
-                link
-                type="warning"
-                size="small"
-                @click="quickInspect(row)"
-              >
-                派巡检
-              </el-button>
-              <el-button
-                v-if="row.status === '已确认' || (row.status === '待确认' && row.confidence >= 60)"
-                link
-                type="danger"
-                size="small"
-                @click="quickWorkOrder(row)"
-              >
-                建工单
-              </el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <!-- Damage Detail Drawer -->
     <DamageDrawer v-model="drawerVisible" :damage="selectedDamage" @updated="drawerVisible = false" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAppStore } from '../stores/appStore';
-import type { DamageItem } from '../types';
-import StatusTag from '../components/StatusTag.vue';
-import EChartsWrapper from '../components/EChartsWrapper.vue';
-import DamageDrawer from '../components/DamageDrawer.vue';
+import { DataAnalysis, Finished, MapLocation, Warning } from '@element-plus/icons-vue';
 import type { EChartsOption } from 'echarts';
+import type { DamageItem } from '../types';
+import { useAppStore } from '../stores/appStore';
+import EChartsWrapper from '../components/EChartsWrapper.vue';
+import StatusTag from '../components/StatusTag.vue';
+import DamageDrawer from '../components/DamageDrawer.vue';
 
 const router = useRouter();
 const store = useAppStore();
-
 const drawerVisible = ref(false);
 const selectedDamage = ref<DamageItem | null>(null);
 
-function openDrawer(damage: DamageItem) {
-  selectedDamage.value = damage;
-  drawerVisible.value = true;
-}
+const metrics = computed(() => [
+  { label: '管养道路总里程', value: store.metrics.totalMileageKm, unit: 'km', change: '8 条', note: '试点车道实时覆盖', icon: MapLocation, tone: 'blue', path: '/spatial-assets' },
+  { label: '待核验微病害', value: store.metrics.pendingConfirmCount, unit: '处', change: `${store.metrics.pendingInspections} 项`, note: '巡检任务待执行', icon: DataAnalysis, tone: 'violet', path: '/inspections' },
+  { label: '高风险在管病害', value: store.metrics.highRiskDamages, unit: '处', change: '≥70 分', note: '建议优先派工', icon: Warning, tone: 'orange', path: '/damages?risk=高' },
+  { label: '已闭环处置', value: store.metrics.closedDamages, unit: '件', change: '94.8%', note: '本月主动闭环率', icon: Finished, tone: 'green', path: '/work-orders' },
+]);
 
-function quickInspect(damage: DamageItem) {
-  selectedDamage.value = damage;
-  drawerVisible.value = true;
-}
+const workflow = computed(() => [
+  { label: '待现场巡检', caption: '需核验病害类型与尺寸', value: store.metrics.pendingInspections, tone: 'blue', path: '/inspections' },
+  { label: '维修工单进行中', caption: '待派工、已派工与施工中', value: store.metrics.pendingRepairWorkOrders, tone: 'orange', path: '/work-orders' },
+  { label: '等待完工复核', caption: '确认维修质量后销项', value: store.metrics.pendingReviews, tone: 'green', path: '/work-orders?status=待复核' },
+]);
 
-function quickWorkOrder(damage: DamageItem) {
-  selectedDamage.value = damage;
-  drawerVisible.value = true;
-}
-
-function goToDamageListWithFilter(status?: string, risk?: string) {
-  router.push({
-    path: '/damages',
-    query: { status, risk },
-  });
-}
-
-function goToWorkOrders(status?: string) {
-  router.push({
-    path: '/work-orders',
-    query: { status },
-  });
-}
-
-// 1. Status Pie Chart Options
-const statusPieOptions = computed<EChartsOption>(() => ({
-  tooltip: {
-    trigger: 'item',
-    formatter: '{b}: {c} 处 ({d}%)',
-  },
-  legend: {
-    bottom: '0%',
-    left: 'center',
-    itemWidth: 10,
-    itemHeight: 10,
-    textStyle: { fontSize: 11, color: '#64748b' },
-  },
+const trendOptions = computed<EChartsOption>(() => ({
+  tooltip: { trigger: 'axis', backgroundColor: '#10213b', borderWidth: 0, textStyle: { color: '#fff' } },
+  grid: { left: 16, right: 18, bottom: 8, top: 28, containLabel: true },
+  xAxis: { type: 'category', boundaryGap: false, data: ['8/01','8/04','8/07','8/10','8/13','8/16'], axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: '#94a4b9', fontSize: 11 } },
+  yAxis: { type: 'value', axisTick: { show: false }, axisLine: { show: false }, axisLabel: { color: '#94a4b9', fontSize: 11 }, splitLine: { lineStyle: { color: '#edf3f9' } } },
   series: [
-    {
-      name: '病害状态',
-      type: 'pie',
-      radius: ['45%', '70%'],
-      avoidLabelOverlap: false,
-      itemStyle: {
-        borderRadius: 6,
-        borderColor: '#fff',
-        borderWidth: 2,
-      },
-      label: { show: false },
-      data: [
-        { value: store.metrics.statusDist['待确认'], name: '待确认', itemStyle: { color: '#94a3b8' } },
-        { value: store.metrics.statusDist['已确认'], name: '已确认', itemStyle: { color: '#246BCE' } },
-        { value: store.metrics.statusDist['待维修'], name: '待维修', itemStyle: { color: '#F27D26' } },
-        { value: store.metrics.statusDist['已维修'], name: '已维修', itemStyle: { color: '#8B5CF6' } },
-        { value: store.metrics.statusDist['已销项'], name: '已销项', itemStyle: { color: '#18A57A' } },
-      ],
-    },
+    { name: '感知发现', type: 'line', smooth: 0.35, symbol: 'circle', symbolSize: 7, data: [3,5,8,12,16,18], lineStyle: { width: 3, color: '#3d8dff' }, itemStyle: { color: '#3d8dff', borderColor: '#fff', borderWidth: 2 }, areaStyle: { color: 'rgba(61,141,255,.11)' } },
+    { name: '维修销项', type: 'line', smooth: 0.35, symbol: 'circle', symbolSize: 7, data: [1,2,4,7,10,14], lineStyle: { width: 3, color: '#33c694' }, itemStyle: { color: '#33c694', borderColor: '#fff', borderWidth: 2 } },
   ],
 }));
 
-// 2. Damage Type Bar Chart Options
-const typeBarOptions = computed<EChartsOption>(() => {
-  const types = Object.keys(store.metrics.typeMap);
-  const values = types.map((t) => store.metrics.typeMap[t]);
-  return {
-    tooltip: { trigger: 'axis' },
-    grid: { left: '3%', right: '4%', bottom: '3%', top: '8%', containLabel: true },
-    xAxis: {
-      type: 'category',
-      data: types,
-      axisLabel: { fontSize: 10, color: '#64748b', interval: 0, rotate: 20 },
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: { fontSize: 10, color: '#64748b' },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-    },
-    series: [
-      {
-        data: values,
-        type: 'bar',
-        barWidth: '36%',
-        itemStyle: {
-          color: '#246BCE',
-          borderRadius: [4, 4, 0, 0],
-        },
-      },
-    ],
-  };
-});
-
-// 3. Trend Line Chart Options
-const trendLineOptions = computed<EChartsOption>(() => ({
-  tooltip: { trigger: 'axis' },
-  legend: {
-    top: '0%',
-    right: '0%',
-    itemWidth: 12,
-    textStyle: { fontSize: 10, color: '#64748b' },
-  },
-  grid: { left: '3%', right: '4%', bottom: '3%', top: '15%', containLabel: true },
-  xAxis: {
-    type: 'category',
-    data: ['8/01', '8/04', '8/07', '8/10', '8/13', '8/16'],
-    axisLabel: { fontSize: 10, color: '#64748b' },
-    axisLine: { lineStyle: { color: '#cbd5e1' } },
-  },
-  yAxis: {
-    type: 'value',
-    axisLabel: { fontSize: 10, color: '#64748b' },
-    splitLine: { lineStyle: { color: '#f1f5f9' } },
-  },
-  series: [
-    {
-      name: '感知发现',
-      type: 'line',
-      smooth: true,
-      data: [3, 5, 8, 12, 16, 18],
-      itemStyle: { color: '#D93025' },
-      areaStyle: { color: 'rgba(217, 48, 37, 0.06)' },
-    },
-    {
-      name: '核验销项',
-      type: 'line',
-      smooth: true,
-      data: [1, 2, 4, 7, 10, 14],
-      itemStyle: { color: '#18A57A' },
-      areaStyle: { color: 'rgba(24, 165, 122, 0.06)' },
-    },
-  ],
-}));
+function openDamage(damage: DamageItem) { selectedDamage.value = damage; drawerVisible.value = true; }
 </script>

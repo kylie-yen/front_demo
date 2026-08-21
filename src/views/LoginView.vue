@@ -1,129 +1,62 @@
 <template>
-  <div class="w-screen h-screen flex items-center justify-center bg-[#F1F5F9] p-4 font-sans">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-[#E2E8F0] p-8 flex flex-col gap-6">
-      <!-- Top Title & Logo -->
-      <div class="flex flex-col items-center text-center">
-        <div class="w-12 h-12 rounded-xl bg-[#246BCE] flex items-center justify-center text-white shadow-xs mb-3">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-          </svg>
-        </div>
-        <h1 class="text-lg font-bold text-slate-900 tracking-tight">道路微病害主动养护平台</h1>
-        <p class="text-xs text-slate-400 mt-1">众包感知 · 风险评估 · 精准巡检 · 闭环维修</p>
+  <main class="login-page">
+    <section class="login-showcase">
+      <div class="login-brand">
+        <div class="brand-mark brand-mark-light" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div><strong>路安智养</strong><span>Road Care Workroom</span></div>
       </div>
-
-      <!-- Login Form -->
-      <el-form :model="loginForm" label-position="top" @submit.prevent="handleLogin" class="flex flex-col gap-1">
-        <el-form-item label="登录账号">
-          <el-input
-            v-model="loginForm.account"
-            placeholder="请输入管理员或业务账号"
-            prefix-icon="User"
-            size="large"
-          />
-        </el-form-item>
-
-        <el-form-item label="登录密码">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入安全密码"
-            prefix-icon="Lock"
-            show-password
-            size="large"
-          />
-        </el-form-item>
-
-        <div class="flex items-center justify-between text-xs text-slate-600 my-1">
-          <el-checkbox v-model="rememberMe">记住登录状态</el-checkbox>
-          <span class="text-[#246BCE] cursor-pointer hover:underline">忘记密码？</span>
-        </div>
-
-        <el-button
-          type="primary"
-          size="large"
-          class="w-full !rounded-xl !h-11 mt-2 text-sm font-semibold !bg-[#246BCE] hover:!bg-blue-700"
-          :loading="loading"
-          @click="handleLogin"
-        >
-          立即登录进入平台
-        </el-button>
-      </el-form>
-
-      <!-- Quick Demo Account Shortcut -->
-      <div class="pt-4 border-t border-slate-100 flex flex-col gap-2">
-        <span class="text-xs font-semibold text-slate-500">演示账号快捷通道：</span>
-        <div class="grid grid-cols-3 gap-2">
-          <button
-            type="button"
-            @click="quickLogin('admin')"
-            class="px-2.5 py-2 rounded-xl bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-[#246BCE] text-xs font-medium border border-slate-200 hover:border-blue-200 transition cursor-pointer flex flex-col items-center gap-0.5"
-          >
-            <span>管理人员</span>
-            <span class="text-[10px] text-slate-400">张明远</span>
-          </button>
-          <button
-            type="button"
-            @click="quickLogin('inspector1')"
-            class="px-2.5 py-2 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-[#18A57A] text-xs font-medium border border-slate-200 hover:border-emerald-200 transition cursor-pointer flex flex-col items-center gap-0.5"
-          >
-            <span>巡检班组</span>
-            <span class="text-[10px] text-slate-400">李建军</span>
-          </button>
-          <button
-            type="button"
-            @click="quickLogin('repair1')"
-            class="px-2.5 py-2 rounded-xl bg-slate-50 hover:bg-orange-50 text-slate-700 hover:text-[#F27D26] text-xs font-medium border border-slate-200 hover:border-orange-200 transition cursor-pointer flex flex-col items-center gap-0.5"
-          >
-            <span>维修班组</span>
-            <span class="text-[10px] text-slate-400">王宏伟</span>
-          </button>
-        </div>
+      <div class="showcase-copy">
+        <span>城市道路主动养护协作平台</span>
+        <h1>感知每一处隐患，<br />协同每一次养护。</h1>
+        <p>融合众包感知、风险研判、巡检核验与维修闭环，让道路治理从被动响应走向主动预防。</p>
       </div>
-
-      <!-- Footer Info -->
-      <div class="text-center text-[11px] text-slate-400">
-        闵行区永德路试点区 · 比赛验证展示版 (MVP)
+      <div class="road-illustration" aria-hidden="true">
+        <div class="city city-back"><i></i><i></i><i></i><i></i></div>
+        <div class="city city-front"><i></i><i></i><i></i></div>
+        <div class="road-path"><span></span><span></span><span></span></div>
+        <div class="map-pin pin-one"></div><div class="map-pin pin-two"></div><div class="scan-pulse"></div>
       </div>
-    </div>
-  </div>
+      <div class="showcase-stats">
+        <div><strong>8</strong><span>条试点车道</span></div><div><strong>1.8 km²</strong><span>实时感知覆盖</span></div><div><strong>94.8%</strong><span>养护闭环率</span></div>
+      </div>
+    </section>
+
+    <section class="login-form-side">
+      <div class="login-form-wrap">
+        <div class="login-heading"><span class="eyebrow">WELCOME BACK</span><h2>登录养护工作台</h2><p>使用你的业务账号继续</p></div>
+        <el-form :model="loginForm" label-position="top" @submit.prevent="handleLogin" class="login-form">
+          <el-form-item label="登录账号"><el-input v-model="loginForm.account" placeholder="请输入业务账号" size="large" /></el-form-item>
+          <el-form-item label="登录密码"><el-input v-model="loginForm.password" type="password" placeholder="请输入密码" show-password size="large" /></el-form-item>
+          <div class="login-options"><el-checkbox v-model="rememberMe">记住登录状态</el-checkbox><button type="button">忘记密码？</button></div>
+          <el-button type="primary" size="large" class="login-submit" :loading="loading" @click="handleLogin">进入工作台 <span aria-hidden="true">→</span></el-button>
+        </el-form>
+        <div class="demo-access">
+          <span>演示身份快捷登录</span>
+          <div><button v-for="account in demoAccounts" :key="account.id" type="button" @click="quickLogin(account.id)"><b>{{ account.initial }}</b><span><strong>{{ account.role }}</strong><small>{{ account.name }}</small></span></button></div>
+        </div>
+        <p class="login-footnote">2026 智慧城市竞赛 · 闵行区永德路试点</p>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAppStore } from '../stores/appStore';
-import { Odometer } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import { useAppStore } from '../stores/appStore';
 
 const router = useRouter();
 const store = useAppStore();
-
 const loading = ref(false);
 const rememberMe = ref(true);
+const loginForm = reactive({ account: 'admin', password: 'demo2026' });
+const demoAccounts = [{ id: 'admin', initial: '管', role: '管理人员', name: '张明远' }, { id: 'inspector1', initial: '巡', role: '巡检班组', name: '李建国' }, { id: 'repair1', initial: '修', role: '维修班组', name: '王宏伟' }];
 
-const loginForm = reactive({
-  account: 'admin',
-  password: '••••••••',
-});
-
-function handleLogin() {
+function login(account: string, delay = 320) {
   loading.value = true;
-  setTimeout(() => {
-    store.login(loginForm.account);
-    loading.value = false;
-    ElMessage.success(`欢迎回来，${store.currentUser.name}`);
-    router.push('/dashboard');
-  }, 400);
+  window.setTimeout(() => { store.login(account); loading.value = false; ElMessage.success(`欢迎回来，${store.currentUser.name}`); router.push('/dashboard'); }, delay);
 }
-
-function quickLogin(account: string) {
-  loading.value = true;
-  setTimeout(() => {
-    store.login(account);
-    loading.value = false;
-    ElMessage.success(`快捷登录成功：【${store.currentUser.role}】${store.currentUser.name}`);
-    router.push('/dashboard');
-  }, 300);
-}
+function handleLogin() { login(loginForm.account, 420); }
+function quickLogin(account: string) { login(account); }
 </script>

@@ -36,7 +36,7 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="font-bold text-sm text-slate-800">轨迹地图空间回放</span>
-            <span class="text-xs text-slate-400">里程 {{ currentTrack?.distance_km }}km | 采样点 {{ currentTrack?.point_count }} 个</span>
+            <span class="text-xs text-slate-400">里程 {{ currentTrack?.distance_km }}km | 采样点 {{ currentTrack?.samples_count }} 个</span>
           </div>
 
           <!-- Playback controls -->
@@ -71,7 +71,7 @@
         <div>
           <div class="flex items-center justify-between mb-2">
             <h3 class="text-sm font-bold text-slate-800">实时动力学波形与冲击峰值</h3>
-            <span class="text-[11px] text-red-500 font-medium">冲击阈值: 14.5 m/s²</span>
+            <span class="text-[11px] text-slate-500 font-medium">冲击阈值: 14.5 m/s²</span>
           </div>
 
           <!-- Vibration Chart -->
@@ -83,7 +83,7 @@
           <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs">
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col">
               <span class="text-slate-400">当前垂向加速度</span>
-              <span class="text-base font-bold text-red-600 mt-1">{{ currentAcc.toFixed(2) }} m/s²</span>
+              <span class="text-base font-bold text-slate-900 mt-1">{{ currentAcc.toFixed(2) }} m/s²</span>
             </div>
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col">
               <span class="text-slate-400">即时骑行时速</span>
@@ -91,7 +91,7 @@
             </div>
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col">
               <span class="text-slate-400">振动均方根 RMS</span>
-              <span class="text-base font-bold text-blue-600 mt-1">{{ currentRms.toFixed(2) }} m/s²</span>
+              <span class="text-base font-bold text-slate-900 mt-1">{{ currentRms.toFixed(2) }} m/s²</span>
             </div>
           </div>
         </div>
@@ -242,10 +242,25 @@ const waveChartOptions = computed<EChartsOption>(() => ({
       type: 'line',
       smooth: true,
       data: [9.8, 10.2, 11.0, 24.8, 16.5, 12.0, 9.8, 10.1, 9.9, 10.3, 9.8],
-      itemStyle: { color: '#ef4444' },
+      itemStyle: { color: '#2563eb' },
+      lineStyle: { width: 2.5 },
+      markPoint: {
+        symbol: 'circle',
+        symbolSize: 10,
+        data: [{ type: 'max', name: '冲击峰值' }],
+        itemStyle: { color: '#ffffff', borderColor: '#2563eb', borderWidth: 3 },
+        label: {
+          position: 'right',
+          distance: 8,
+          color: '#1d4ed8',
+          fontSize: 10,
+          formatter: '{c} m/s²',
+        },
+      },
       markLine: {
         data: [{ yAxis: 14.5, name: '冲击阈值' }],
-        lineStyle: { color: '#f59e0b', type: 'dashed' },
+        lineStyle: { color: '#94a3b8', type: 'dashed' },
+        label: { color: '#64748b', fontSize: 10 },
       },
     },
   ],

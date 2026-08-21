@@ -153,14 +153,14 @@ const vibrationComparisonOptions = computed<EChartsOption>(() => ({
       type: 'bar',
       barWidth: '25%',
       data: [7.8, 6.2, 5.9, 6.8, 5.4],
-      itemStyle: { color: '#ef4444', borderRadius: [4, 4, 0, 0] },
+      itemStyle: { color: '#6366f1', borderRadius: [4, 4, 0, 0] },
     },
     {
       name: '维修后振动 RMS',
       type: 'bar',
       barWidth: '25%',
       data: [1.8, 1.6, 1.9, 1.7, 1.5],
-      itemStyle: { color: '#10b981', borderRadius: [4, 4, 0, 0] },
+      itemStyle: { color: '#0f766e', borderRadius: [4, 4, 0, 0] },
     },
   ],
 }));
